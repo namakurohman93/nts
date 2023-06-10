@@ -1,4 +1,4 @@
-use nts::run;
+use nts::startup::run;
 use std::net::TcpListener;
 
 #[tokio::main]
