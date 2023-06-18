@@ -1,0 +1,6 @@
+application_port: 3000
+database:
+  host: "127.0.0.1"
+  port: 5432
+  username: "didadadida93"
+  database_name: "didadadida93"
