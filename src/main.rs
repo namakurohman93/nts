@@ -1,8 +1,8 @@
-use nts::startup::run;
 use nts::configuration::get_configuration;
+use nts::startup::run;
 use nts::telemetry::{get_subscriber, init_subscriber};
-use std::net::TcpListener;
 use sqlx::PgPool;
+use std::net::TcpListener;
 
 #[tokio::main]
 async fn main() -> Result<(), std::io::Error> {
