@@ -22,6 +22,8 @@ async fn subscribe_returns_a_200_for_valid_form_data() {
     assert_eq!(200, response.status().as_u16());
     assert_eq!(saved.email, "ursula_le_guin@gmail.com");
     assert_eq!(saved.name, "le guin");
+
+    app.teardown_database().await;
 }
 
 #[tokio::test]
@@ -50,6 +52,8 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
             error_message
         );
     }
+
+    app.teardown_database().await;
 }
 
 #[tokio::test]
@@ -78,4 +82,6 @@ async fn subscribe_return_a_400_when_fields_are_present_but_invalid() {
             description
         )
     }
+
+    app.teardown_database().await;
 }

@@ -21,6 +21,36 @@ static TRACING: Lazy<()> = Lazy::new(|| {
 pub struct TestApp {
     pub address: String,
     pub db_pool: PgPool,
+    database_settings: DatabaseSettings,
+}
+
+impl TestApp {
+    pub async fn teardown_database(&self) {
+        self.db_pool.close().await;
+
+        let mut connection = PgConnection::connect(
+            format!(
+                "postgres://{}@{}:{}",
+                &self.database_settings.username,
+                &self.database_settings.host,
+                self.database_settings.port
+            )
+            .as_str(),
+        )
+        .await
+        .expect("Failed to connect to Postgres");
+
+        connection
+            .execute(
+                format!(
+                    r#"DROP DATABASE "{}";"#,
+                    &self.database_settings.database_name
+                )
+                .as_str(),
+            )
+            .await
+            .expect("Failed to drop database");
+    }
 }
 
 pub async fn spawn_app() -> TestApp {
@@ -40,6 +70,7 @@ pub async fn spawn_app() -> TestApp {
     TestApp {
         address,
         db_pool: connection_pool,
+        database_settings: configuration.database,
     }
 }
 
