@@ -86,10 +86,32 @@ pub async fn configure_database(config: &DatabaseSettings) -> PgPool {
     let connection_pool = PgPool::connect_with(config.with_db())
         .await
         .expect("Failed to connect to Postgres");
-    sqlx::query_file!("./migrations/2023-06-11_create_subscription_table.sql")
-        .execute(&connection_pool)
-        .await
-        .expect("Failed to migrate the database");
+
+    // iterate over migration dir and execute query files
+    let mut files: Vec<_> = Vec::new();
+    let migration_dir = std::env::current_dir().unwrap().join("migrations");
+
+    if let Ok(entries) = std::fs::read_dir(&migration_dir) {
+        for entry in entries {
+            if let Ok(entry) = entry {
+                files.push(entry.file_name());
+            } else {
+                panic!("Failed to read directory entry");
+            }
+        }
+    } else {
+        panic!("Failed to read migration directory");
+    }
+
+    files.sort();
+
+    for file in files.into_iter() {
+        let query = std::fs::read_to_string(&migration_dir.join(file)).unwrap();
+        connection_pool
+            .execute(query.as_str())
+            .await
+            .expect("Failed to execute migration query");
+    }
 
     connection_pool
 }
