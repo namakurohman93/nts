@@ -5,3 +5,6 @@ database:
   port: 5432
   username: "didadadida93"
   database_name: "didadadida93"
+email_client:
+  base_url: "localhost"
+  sender_email: "test@gmail.com"
