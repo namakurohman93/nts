@@ -25,6 +25,7 @@ serde-aux = "4"
 unicode-segmentation = "1"
 validator = "0.16"
 secrecy = { version = "0.8", features = ["serde"] }
+rand = { version = "0.8", features = ["std_rng"] }
 
 [dependencies.sqlx]
 version = "0.6"
